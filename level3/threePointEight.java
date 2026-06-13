@@ -28,10 +28,10 @@ package level3;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class threePointEight {
+    static ArrayList<Integer> largestNodes = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -45,17 +45,24 @@ public class threePointEight {
         }
         scanner.close();
 
-        System.out.println(countComponents(graph)[0]);
-        System.out.println(countComponents(graph)[1]);
+        int[] result = countComponents(graph);
+        Collections.sort(largestNodes);
+        System.out.println();       
+        System.out.println(result[0]);
+        System.out.println(result[1]);
+        for (int n : largestNodes) {
+            System.out.print(n + " ");
+        }
     }
 
-    static int dfs(int[][] graph, int node, boolean[] visited, int localCount) {
+    static int dfs(int[][] graph, int node, boolean[] visited, int localCount, ArrayList<Integer> component) {
         localCount++;
         visited[node] = true;
+        component.add(node + 1);
 
         for (int i = 0; i < graph.length; i++) {
             if (graph[node][i] > 0 && !visited[i]) {
-                dfs(graph, i, visited, localCount);
+                localCount = dfs(graph, i, visited, localCount, component);
             }
         }
         return localCount;
@@ -69,9 +76,11 @@ public class threePointEight {
             int localCount = 0;
             if (!marked[i]) {
                 count++;
-                localCount = dfs(graph, i, marked, 1);
+                ArrayList<Integer> component = new ArrayList<>();
+                localCount = dfs(graph, i, marked, 0, component);
                 if (localCount > largestComponent) {
                     largestComponent = localCount;
+                    largestNodes = component;
                 }
             }
         }
