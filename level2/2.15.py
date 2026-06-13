@@ -32,36 +32,32 @@ class LinkedList:
     def __init__(self):
         self.head = None 
 
-    def append(self, data):
-        newNode = Node(data)
-        if not self.head:
-            self.head = newNode
-            return
-        
-        current = self.head
-        while current.next:
-            current = current.next
-        current.next = newNode
-
     def hasCycle(self):
         hare = self.head
         tortoise = self.head
-        cindex = 0
-        while hare.next:
+        while hare and hare.next:
             hare = hare.next.next
             tortoise = tortoise.next
-            if hare == tortoise:
-                print(f"CYCLE at {cindex}")
+            if hare is tortoise:
+                tortoise = self.head
+                while tortoise is not hare:
+                    tortoise = tortoise.next
+                    hare = hare.next
+                print(f"CYCLE AT {hare.data}")
                 return
+            
         print("NO CYCLE")
         return
+            
 
+
+            
     def buildListFromLinks(self, links):
         nodes = []
         for i in range(len(links)):
-            nodes.append(Node(0))
-        for i in range((len(nodes))):
-            nodes[i].next = nodes[links[i]]
+            nodes.append(Node(i))
+        for i, nxt in enumerate(links):
+            nodes[i].next = nodes[nxt] if nxt != -1 else None
         self.head = nodes[0]
 
 def testCycle():
